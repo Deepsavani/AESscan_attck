@@ -60,11 +60,10 @@ static void test_encrypt_ecb_verbose(void)
 {
     // Example of more verbose verification
 
-    uint8_t i,j,wrap_b[16][2], b[2];
-    
+    uint8_t i,j,wrap_b[16][2], b[2],key_pos[16][2];
     
     // 128bit key
-    uint8_t key[16] = { (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00 };
+    uint8_t key[16] = { (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0xd2, (uint8_t) 0xa6, (uint8_t) 0xab, (uint8_t) 0xf7, (uint8_t) 0x15, (uint8_t) 0x88, (uint8_t) 0x09, (uint8_t) 0xcf, (uint8_t) 0x4f, (uint8_t) 0x3c };
     // 512bit text
     struct AES_ctx ctx;
         AES_init_ctx(&ctx, key);
@@ -76,7 +75,7 @@ static void test_encrypt_ecb_verbose(void)
 
     
 
-uint8_t a,x,y,m, plain_text[32],rk0[32],new_text[32];
+uint8_t a,x,y,m, plain_text[32],rk0[32],rk0_2[32],new_text[32],old_text[32];
 uint8_t encrypt_new[32],encrypt_previous[32],xor[32];
 for(x=(uint8_t)0; x<(uint8_t)16; x++){ 
     uint8_t temp[32] = {        (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00,
@@ -90,6 +89,7 @@ for(x=(uint8_t)0; x<(uint8_t)16; x++){
         a=0; 
         printf("OLD Input text : \n ");
         phex(plain_text);
+        memcpy(old_text, plain_text, 16);
         AES_ECB_encrypt_scan(&ctx, plain_text);
         memcpy(encrypt_previous, plain_text, 16);
         temp[x]=temp[x]+(0x01);
@@ -128,7 +128,8 @@ for(x=(uint8_t)0; x<(uint8_t)16; x++){
             wrap_b[x][0] = 226;
             wrap_b[x][1] = 227;
             printf("\n a value = %.2x\n",new_text[x]);
-            rk0[x]=(new_text[x])^(0xE3);
+            key_pos[x][0]=(new_text[x])^(0xE3);
+            key_pos[x][1]=(new_text[x])^(0xE2);
             //printf("%s", *wrap_b);
             printf("\n------------------------break -----------------------\n");
             break;
@@ -137,7 +138,8 @@ for(x=(uint8_t)0; x<(uint8_t)16; x++){
             wrap_b[x][0] = 242;
             wrap_b[x][1] = 243;
             printf("\n a value = %.2x\n",new_text[x]);
-            rk0[x]=(new_text[x])^(0xF3);
+            key_pos[x][0]=(new_text[x])^(0xF3);
+            key_pos[x][1]=(new_text[x])^(0xF2);
             //printf("%s", *wrap_b);
             printf("\n------------------------break -----------------------\n");
             break;
@@ -146,7 +148,8 @@ for(x=(uint8_t)0; x<(uint8_t)16; x++){
             wrap_b[x][0] = 122;
             wrap_b[x][1] = 123;
             printf("\n a value = %.2x\n",new_text[x]);
-            rk0[x]=(new_text[x])^(0x7B);
+            key_pos[x][0]=(new_text[x])^(0x7B);
+            key_pos[x][1]=(new_text[x])^(0x7a);
             //printf("%s", *wrap_b);
             printf("\n------------------------break -----------------------\n");
             break;
@@ -155,7 +158,8 @@ for(x=(uint8_t)0; x<(uint8_t)16; x++){
             wrap_b[x][0] = 130;
             wrap_b[x][1] = 131;
             printf("\n a value = %.2x\n",new_text[x]);
-            rk0[x]=(new_text[x])^(0x83);
+            key_pos[x][0]=(new_text[x])^(0x83);
+            key_pos[x][1]=(new_text[x])^(0x82);
             printf("%s", *wrap_b);
             printf("\n------------------------break -----------------------\n");
             break;
@@ -170,17 +174,26 @@ for(x=(uint8_t)0; x<(uint8_t)16; x++){
     continue;
 }
 
-printf("rk0 ------\n");
-phex(rk0);
+// printf("rk0 ------\n");
+// phex(rk0);
+//---------------------------------- print possinble values of b
+for(i=0;i<16;i++){
+    for(j=0;j<2;j++){
+        printf("%.2x ", key_pos[i][j]);
+        if(j==1){
+            printf("\n"); 
+        }
+    }
+}
+// for(i=0;i<65536;i++){
+//     for(j=0;j<2;j++){
+//         for(k=0;k<16;k++){
+//             key[j]=rk0[k][j];
 
-//  for(i=0;i<16;i++){
-//      for(j=0;j<2;j++){
-//      printf("%d ", wrap_b[i][j]);
-//      if(j==1){
-//          printf("\n");
-//      }
+//         }
 //     }
-//  }
+// }
+
 
 //  for(i=0;i<16;i++){
 //      uint8_t temp[32] = {       (uint8_t) 0x0d, (uint8_t) 0x09, (uint8_t) 0x77, (uint8_t) 0x14,
