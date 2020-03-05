@@ -422,19 +422,19 @@ void Cipher(state_t* state, uint8_t RoundKey[240])
   // There will be Nr rounds.
   // The first Nr-1 rounds are identical.
   // These Nr-1 rounds are executed in the loop below.
-  // Cipher_label33:for (round = 1; round < Nr; ++round)
-  // {
-  //   SubBytes(state);
-  //   ShiftRows(state);
-  //   MixColumns(state);
-  //   AddRoundKey(round, state, RoundKey);
-  // }
+  Cipher_label33:for (round = 1; round < Nr; ++round)
+  {
+    SubBytes(state);
+    ShiftRows(state);
+    MixColumns(state);
+    AddRoundKey(round, state, RoundKey);
+  }
   
   // The last round is given below.
   // The MixColumns function is not here in the last round.
-  // SubBytes(state);
-  // ShiftRows(state);
-  // AddRoundKey(Nr, state, RoundKey);
+  SubBytes(state);
+  ShiftRows(state);
+  AddRoundKey(Nr, state, RoundKey);
 }
 
 void Cipher_scan(state_t* state, uint8_t RoundKey[240])
