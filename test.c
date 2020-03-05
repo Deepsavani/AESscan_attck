@@ -76,7 +76,7 @@ static void test_encrypt_ecb_verbose(void)
 
     
 
-uint8_t a,x,y,m, plain_text[32],rk0[32];
+uint8_t a,x,y,m, plain_text[32],rk0[32],new_text[32];
 uint8_t encrypt_new[32],encrypt_previous[32],xor[32];
 for(x=(uint8_t)0; x<(uint8_t)16; x++){ 
     uint8_t temp[32] = {        (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00, (uint8_t) 0x00,
@@ -97,6 +97,7 @@ for(x=(uint8_t)0; x<(uint8_t)16; x++){
         memcpy(plain_text, temp, 16);
         printf(" NEW Input text : \n ");
         phex(plain_text);
+        memcpy(new_text, plain_text, 16);
         AES_ECB_encrypt_scan(&ctx, plain_text);
         memcpy(encrypt_new, plain_text, 16);
         temp[x]=temp[x]+(0x01);
@@ -126,8 +127,8 @@ for(x=(uint8_t)0; x<(uint8_t)16; x++){
         if(a==9){
             wrap_b[x][0] = 226;
             wrap_b[x][1] = 227;
-            printf("\n a value = %.2x\n",encrypt_new[x]);
-            rk0[x]=(encrypt_new[x])^(0xE3);
+            printf("\n a value = %.2x\n",new_text[x]);
+            rk0[x]=(new_text[x])^(0xE3);
             //printf("%s", *wrap_b);
             printf("\n------------------------break -----------------------\n");
             break;
@@ -135,8 +136,8 @@ for(x=(uint8_t)0; x<(uint8_t)16; x++){
         else if(a==12){
             wrap_b[x][0] = 242;
             wrap_b[x][1] = 243;
-            printf("\n a value = %.2x\n",encrypt_new[x]);
-            rk0[x]=(encrypt_new[x])^(0xF3);
+            printf("\n a value = %.2x\n",new_text[x]);
+            rk0[x]=(new_text[x])^(0xF3);
             //printf("%s", *wrap_b);
             printf("\n------------------------break -----------------------\n");
             break;
@@ -144,8 +145,8 @@ for(x=(uint8_t)0; x<(uint8_t)16; x++){
         else if(a==23){
             wrap_b[x][0] = 122;
             wrap_b[x][1] = 123;
-            printf("\n a value = %.2x\n",encrypt_new[x]);
-            rk0[x]=(encrypt_new[x])^(0x7B);
+            printf("\n a value = %.2x\n",new_text[x]);
+            rk0[x]=(new_text[x])^(0x7B);
             //printf("%s", *wrap_b);
             printf("\n------------------------break -----------------------\n");
             break;
@@ -153,8 +154,8 @@ for(x=(uint8_t)0; x<(uint8_t)16; x++){
         else if(a==24){
             wrap_b[x][0] = 130;
             wrap_b[x][1] = 131;
-            printf("\n a value = %.2x\n",encrypt_new[x]);
-            rk0[x]=(encrypt_new[x])^(0x83);
+            printf("\n a value = %.2x\n",new_text[x]);
+            rk0[x]=(new_text[x])^(0x83);
             printf("%s", *wrap_b);
             printf("\n------------------------break -----------------------\n");
             break;
