@@ -72,11 +72,6 @@ NOTE:   String length must be evenly divisible by 16byte (str_len % 16 == 0)
 // state - array holding the intermediate results during decryption.
 typedef uint8_t state_t[4][4];
 
-struct arrWrap {
-  uint8_t arr[4][4];
-};
-
-
 // The lookup-tables are marked const so they can be placed in read-only storage instead of RAM
 // The numbers below can be computed dynamically trading ROM for RAM - 
 // This can be useful in (embedded) bootloader applications, where ROM is often limited.
@@ -427,26 +422,24 @@ void Cipher(state_t* state, uint8_t RoundKey[240])
   // There will be Nr rounds.
   // The first Nr-1 rounds are identical.
   // These Nr-1 rounds are executed in the loop below.
-  Cipher_label33:for (round = 1; round < Nr; ++round)
-  {
-    SubBytes(state);
-    ShiftRows(state);
-    MixColumns(state);
-    AddRoundKey(round, state, RoundKey);
-  }
+  // Cipher_label33:for (round = 1; round < Nr; ++round)
+  // {
+  //   SubBytes(state);
+  //   ShiftRows(state);
+  //   MixColumns(state);
+  //   AddRoundKey(round, state, RoundKey);
+  // }
   
   // The last round is given below.
   // The MixColumns function is not here in the last round.
-  SubBytes(state);
-  ShiftRows(state);
-  AddRoundKey(Nr, state, RoundKey);
+  // SubBytes(state);
+  // ShiftRows(state);
+  // AddRoundKey(Nr, state, RoundKey);
 }
 
 void Cipher_scan(state_t* state, uint8_t RoundKey[240])
 {
-  struct arrWrap a;
   uint8_t round = 0;
-  uint8_t i,j;
 
   // Add the First round key to the state before starting the rounds.
   AddRoundKey(0, state, RoundKey);
@@ -501,11 +494,14 @@ void InvCipher(state_t* state,uint8_t RoundKey[240])
 /*****************************************************************************/
 #if defined(ECB) && (ECB == 1)
 
-
 void AES_ECB_encrypt(struct AES_ctx *ctx, uint8_t* buf)
 {
-  struct arrWrap b;
-  uint8_t i,j;
+  // The next function call encrypts the PlainText with the Key using AES algorithm.
+  Cipher((state_t*)buf, ctx->RoundKey);
+}
+
+void AES_ECB_encrypt_scan(struct AES_ctx *ctx, uint8_t* buf)
+{
   // The next function call encrypts the PlainText with the Key using AES algorithm.
   Cipher_scan((state_t*)buf, ctx->RoundKey);
 }
