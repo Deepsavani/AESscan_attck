@@ -133,7 +133,7 @@ for(x=(uint8_t)0; x<(uint8_t)16; x++){
             // printf("\n a value = %.2x\n",new_text[x]);
             key_pos[x][0]=(new_text[x])^(0xE2); // XOR WITH THE CORRESPOONDING INPUT AND PUT IT IN A 2D ARRAY
             key_pos[x][1]=(new_text[x])^(0xE3);
-            printf("\n------------------------break -----------------------\n");
+            printf("\n-------------------------break -----------------------\n");
             break;
         }
         else if(a==12){
